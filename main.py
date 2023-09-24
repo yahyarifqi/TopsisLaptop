@@ -5,7 +5,7 @@ from topsis import Topsis
 def calculate(data, crit):
     columns = [col for col in data.columns if col in crit.index]
     _evalMatrix = data[columns].to_numpy()
-    print(_evalMatrix)
+    #print(_evalMatrix)
 
     _weight = []
     _impact = []
@@ -23,13 +23,18 @@ def calculate(data, crit):
     return res
 
 def user_input(critTable):
+    pricePref = {'newPrice':0, 'secondPrice':0}
+
     def addInput(row):
-        row['weight'] = st.sidebar.slider('Bobot ' + row['text'], 0.0, 1.0, 1.0, 0.05)
+        print(row.name)
+        row['weight'] = st.sidebar.slider('Bobot ' + row['text'], 0.0, 5.0, 1.0, 0.05)
+        if row.name in pricePref.keys():
+            pricePref[row.name] = st.sidebar.number_input('Preferensi ' + row['text'] + ' (Rupiah)', value=0, step=100000)
         return row
 
     critTable = critTable.apply(addInput, axis=1)
 
-    return critTable
+    return pricePref, critTable
 
 def init():
     #Import tabel-tabel yang diperlukan
@@ -43,6 +48,13 @@ def init():
     category = pd.read_csv('categorization.csv',  encoding='unicode_escape')
     category['spesifikasi'] = category['spesifikasi'].map(lambda x: x.lower())
     category = category.drop_duplicates(subset=['spesifikasi']).set_index('spesifikasi')
+
+    return data, criteria, subcrit, category
+
+def pre_process(data, criteria, subcrit, category, pricePref):
+    #Normalisasi Data Harga
+    for key in pricePref.keys():
+        data[key] = data[key].map(lambda x: abs(x-pricePref[key]))
 
     #Mengubah data-data kategorikal ke dalam kategorinya masing-masing
     columns = [i for i in data.columns if i in category['criteria'].unique()]
@@ -69,30 +81,35 @@ def init():
                             res = row['weight']  
                     return res
                 
-                matrixData[col] = tempData[col].map(process_num)  
-
-    return data, criteria, matrixData
+                matrixData[col] = tempData[col].map(process_num)
+    return matrixData
 
 def write():
 
     st.write("""
     ## Rekomendasi laptop berdasarkan input user menggunakan TOPSIS
 
-    di bawah adalah laptop yang direkomendasikan         
+    Di bawah adalah daftar laptop yang tersedia      
     """)
 
-    data, criteria, matrixData = init()
+    data, criteria, subcrit, category = init()
 
     st.sidebar.header('Preferensi Bobot Pengguna')
 
-    criteria = user_input(criteria)
+    pricePref, criteria = user_input(criteria)
+
+    print(pricePref)
+
+    matrixData = pre_process(data.copy(), criteria, subcrit, category, pricePref)
+
+    st.write(data)
 
     ranking = calculate(matrixData, criteria)
 
+    st.write("Di bawah adalah rekomendasi laptop yang kami berikan")
     st.write(data.iloc[ranking][['laptopName', 'newPrice', 'secondPrice']].reset_index(drop=True))
 
     return 0
 
 write()
-
 
