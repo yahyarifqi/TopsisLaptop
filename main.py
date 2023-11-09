@@ -10,6 +10,7 @@ def calculate(data, crit):
     _weight = []
     _impact = []
 
+    #impact 1 means benefit impact while impact 0 means cost impact
     for i in range(len(columns)):
         _weight.append(crit.loc[columns[i], 'weight'])
         _impact.append(crit.loc[columns[i], 'impact'])
@@ -34,7 +35,7 @@ def user_input(critTable):
 
     critTable = critTable.apply(addInput, axis=1)
 
-    return pricePref, critTable
+    return pricePref, critTable  
 
 def init():
     #Import tabel-tabel yang diperlukan
