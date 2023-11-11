@@ -40,12 +40,12 @@ if selected4 == "Home":
     )
     # Tambahkan konten khusus untuk halaman Home di sini
 elif selected4 == "Data Laptop":
-    st.title("Halaman Upload")
+    st.title("Halaman Data Laptop")
 
     # Tambahkan konten khusus untuk halaman Upload di sini
 elif selected4 == "Rekomendasi Laptop":
     #st.title("Halaman Tasks")
-    def calculate(data, crit):
+    def calculate(data, crit): 
         columns = [col for col in data.columns if col in crit.index]
         _evalMatrix = data[columns].to_numpy()
         #print(_evalMatrix)
