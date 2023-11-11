@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
 from topsis import Topsis
-
+from dbmanagement import DbManagement
+db = DbManagement('laptopsis.db')
 def calculate(data, crit):
     columns = [col for col in data.columns if col in crit.index]
     _evalMatrix = data[columns].to_numpy()
-    #print(_evalMatrix)
 
     _weight = []
     _impact = []
@@ -39,42 +39,29 @@ def user_input(critTable):
 
 def init():
     #Import tabel-tabel yang diperlukan
-    data =  pd.read_csv('database.csv', encoding='unicode_escape')
+    db = DbManagement('laptopsis.db')
+    data =  db.get_laptop_data(for_topsis=True)
 
-    criteria = pd.read_csv('criteria.csv')
+    criteria = db.get_criteria()
     criteria = criteria.set_index('criteria')
 
-    subcrit = pd.read_csv('subcriteria.csv')
+    subcrit = db.get_sub_criteria()
 
-    category = pd.read_csv('categorization.csv',  encoding='unicode_escape')
-    category['spesifikasi'] = category['spesifikasi'].map(lambda x: x.lower())
-    category = category.drop_duplicates(subset=['spesifikasi']).set_index('spesifikasi')
+    return data, criteria, subcrit
 
-    return data, criteria, subcrit, category
-
-def pre_process(data, criteria, subcrit, category, pricePref):
+def pre_process(data, criteria, subcrit, pricePref):
     #Normalisasi Data Harga
     for key in pricePref.keys():
         data[key] = data[key].map(lambda x: abs(x-pricePref[key]))
 
-    #Mengubah data-data kategorikal ke dalam kategorinya masing-masing
-    columns = [i for i in data.columns if i in category['criteria'].unique()]
+    matrixData = data.copy()
 
-    tempData = data.copy()
-    tempData = tempData[[i for i in data.columns if i in criteria.index]]
-
-    for col in columns:
-        tempData[col] = data[col].map(lambda val:category.loc[val.lower(),'kelas'])
-
-    #Mengubah data berbobot ke bobotnya masing-masing
-    matrixData = tempData.copy()
-
-    for col in tempData.columns:
+    for col in [i for i in data.columns if i in criteria.index]:
         if criteria.loc[col, 'weighted']:
             _temp = subcrit[subcrit['criteria'] == col].set_index('value', drop=False)
-            if criteria.loc[col,'type'] == 'discrete':
-                matrixData[col] = tempData[col].map(lambda x: _temp.loc[x,'weight'])   
-            else:
+            if criteria.loc[col,'type'] == 'numeric':
+            #     matrixData[col] = data[col].map(lambda x: _temp.loc[x,'weight'])   
+            # else:
                 def process_num(value):
                     res = 0
                     for index,row in _temp.iterrows():
@@ -82,7 +69,7 @@ def pre_process(data, criteria, subcrit, category, pricePref):
                             res = row['weight']  
                     return res
                 
-                matrixData[col] = tempData[col].map(process_num)
+                matrixData[col] = data[col].map(process_num)
     return matrixData
 
 def write():
@@ -93,7 +80,7 @@ def write():
     Di bawah adalah daftar laptop yang tersedia      
     """)
 
-    data, criteria, subcrit, category = init()
+    data, criteria, subcrit = init()
 
     st.sidebar.header('Preferensi Bobot Pengguna')
 
@@ -101,9 +88,9 @@ def write():
 
     print(pricePref)
 
-    matrixData = pre_process(data.copy(), criteria, subcrit, category, pricePref)
+    matrixData = pre_process(data.copy(), criteria, subcrit, pricePref)
 
-    st.write(data)
+    st.write(db.get_laptop_data())
 
     ranking = calculate(matrixData, criteria)
 
