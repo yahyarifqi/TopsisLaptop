@@ -3,6 +3,7 @@ import pandas as pd
 from topsis import Topsis
 from dbmanagement import DbManagement
 db = DbManagement('laptopsis.db')
+
 def calculate(data, crit):
     columns = [col for col in data.columns if col in crit.index]
     _evalMatrix = data[columns].to_numpy()
@@ -27,10 +28,14 @@ def user_input(critTable):
     pricePref = {'newPrice':0, 'secondPrice':0}
 
     def addInput(row):
-        print(row.name)
-        row['weight'] = st.sidebar.slider('Bobot ' + row['text'], 0.0, 5.0, 1.0, 0.05)
-        if row.name in pricePref.keys():
-            pricePref[row.name] = st.sidebar.number_input('Preferensi ' + row['text'] + ' (Rupiah)', value=0, step=100000)
+        with col1:
+            if row.name in ['brandName', 'screenSize', 'screenResolution', 'processors', 'diskType', 'storage', 'graphicCard']:
+                row['weight'] = st.slider('Bobot ' + row['text'], 0.0, 5.0, 1.0, 0.05)
+        with col2:
+                if row.name in ['ram', 'weight', 'durability', 'newPrice', 'secondPrice']:
+                    row['weight'] = st.slider('Bobot ' + row['text'], 0.0, 5.0, 1.0, 0.05)
+                if row.name in pricePref.keys():
+                    pricePref[row.name] = st.number_input('Preferensi ' + row['text'] + ' (Rupiah)', value=0, step=100000)
         return row
 
     critTable = critTable.apply(addInput, axis=1)
@@ -72,32 +77,17 @@ def pre_process(data, criteria, subcrit, pricePref):
                 matrixData[col] = data[col].map(process_num)
     return matrixData
 
-def write():
+st.set_page_config(page_title="Rekomendasi Laptop", page_icon="🛒")
+st.markdown("# Rekomendasi Laptop")
+st.sidebar.header("Rekomendasi Laptop")
+st.write("Silahkan masukkan bobot preferensi laptop Anda")
+col1, col2 = st.columns(2)
 
-    st.write("""
-    ## Rekomendasi laptop berdasarkan input user menggunakan TOPSIS
+data, criteria, subcrit = init()
 
-    Di bawah adalah daftar laptop yang tersedia      
-    """)
+pricePref, criteria = user_input(criteria)
+matrixData = pre_process(data.copy(), criteria, subcrit, pricePref)
+ranking = calculate(matrixData, criteria)
 
-    data, criteria, subcrit = init()
-
-    st.sidebar.header('Preferensi Bobot Pengguna')
-
-    pricePref, criteria = user_input(criteria)
-
-    print(pricePref)
-
-    matrixData = pre_process(data.copy(), criteria, subcrit, pricePref)
-
-    st.write(db.get_laptop_data())
-
-    ranking = calculate(matrixData, criteria)
-
-    st.write("Di bawah adalah rekomendasi laptop yang kami berikan")
-    st.write(data.iloc[ranking][['laptopName', 'newPrice', 'secondPrice']].reset_index(drop=True))
-
-    return 0
-
-write()
-
+st.write("Di bawah adalah rekomendasi laptop yang kami berikan")
+st.write(data.iloc[ranking][['laptopName', 'newPrice', 'secondPrice']].reset_index(drop=True))
