@@ -54,6 +54,15 @@ class DbManagement():
         result = self.cursor.execute(statement)
         result = self.cursor.fetchall()
         return result
+    
+    def create_user(self, create_username, create_email, create_name, create_password):
+        statement = '''
+        INSERT INTO  user(username,email,name,password) VALUES (?,?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_username, create_email, create_name, create_password))
+        result = self.connection.commit()
+        return result
 
     def __del__(self):
         self.connection.close()
