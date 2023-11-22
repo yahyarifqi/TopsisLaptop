@@ -45,6 +45,15 @@ class DbManagement():
 
         result = pd.read_sql_query(statement, self.connection)
         return result
+    
+    def get_user(self):
+        statement = '''
+        SELECT * from user
+        '''
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
 
     def __del__(self):
         self.connection.close()
