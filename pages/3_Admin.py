@@ -6,7 +6,7 @@ import streamlit_authenticator as stauth
 from dbmanagement import DbManagement
 
 db = DbManagement('laptopsis.db')
-data_user = db.get_user()
+data_user = db.read_user()
 
 st.set_page_config(page_title="Admin", page_icon="🔐")
 st.markdown("# Admin")
@@ -35,33 +35,62 @@ if authentication_status == None:
 
 if authentication_status:
     authenticator.logout("Logout", "sidebar")
-	
-    menu = ['Tambah/Create','Baca/Read','Ubah/Update','Hapus/Delete']
-    choice = st.selectbox("CRUD Data Pengguna", menu)
-    if choice=='Tambah/Create':
-        st.subheader("Tambah Data Pengguna")
+
+    st.subheader("Baca Data Pengguna")
+    read_data_user = pd.DataFrame(data_user,columns=["Username","E-mail","Nama", "Password"])
+    st.write(read_data_user)
+
+    st.subheader("Tambah Data Pengguna")
+    col1, col2 = st.columns(2)
+    with col1:
+        create_username = st.text_input("Username")
+        create_email = st.text_input("E-mail")
+    with col2:
+        create_name = st.text_input("Nama")
+        create_password_list = []
+        create_password = st.text_input("Password", type='password')
+        create_password_list.append(create_password)
+    if st.button("Tambah", type='primary'):
+        hashed_passwords = stauth.Hasher(create_password_list).generate()
+        hashed_passwords = hashed_passwords[0]
+        db.create_user(create_username,create_email, create_name, hashed_passwords)
+        st.success("Data pengguna baru berhasil ditambah: {}".format(create_name))
+        st.rerun()
+
+    st.subheader("Ubah Data Pengguna")
+    list_of_users = [i[0] for i in data_user]
+    selected_user = st.selectbox("Data Pengguna", list_of_users)
+    user_result = db.get_user(selected_user)
+        
+    if user_result:
+        current_username = user_result[0][0]
+        current_email = user_result[0][1]
+        current_name = user_result[0][2]
+        current_password = user_result[0][3]
+
         col1, col2 = st.columns(2)
         with col1:
-            create_username = st.text_input("Username")
-            create_email = st.text_input("E-mail")
+            update_username = st.text_input("Username", value=current_username)
+            update_email = st.text_input("E-mail", value=current_email)
         with col2:
-            create_name = st.text_input("Nama")
-            create_password_list = []
-            create_password = st.text_input("Password", type='password')
-            create_password_list.append(create_password)
-        if st.button("Tambah", type='primary'):
-            hashed_passwords = stauth.Hasher(create_password_list).generate()
-            hashed_passwords = hashed_passwords[0]
-            db.create_user(create_username,create_email, create_name, hashed_passwords)
-            st.success("User baru berhasil ditambah: {}".format(create_name))
-
-    elif choice=='Baca/Read':
-        st.subheader("Baca Data Pengguna")
-        read_data_user = pd.DataFrame(data_user,columns=["Username","E-mail","Nama", "Password"])
-        st.write(read_data_user)
-
-    elif choice=='Ubah/Update':
-        st.subheader("Ubah Data Pengguna")
-
-    elif choice=='Hapus/Delete':
-        st.subheader("Hapus Data Pengguna")
+            update_name = st.text_input("Nama", value=current_name)
+            update_password_list = []
+            update_password = st.text_input("Password", type='password', value=current_password)
+            update_password_list.append(update_password)
+        
+        if st.button("Ubah"):
+            if(update_password==current_password):
+                db.update_user(update_username, update_email, update_name, current_password, current_username, current_email, current_name, current_password)
+                st.success("Data pengguna berhasil diubah: {}".format(update_username))
+            else:
+                update_hashed_passwords = stauth.Hasher(update_password_list).generate()
+                update_hashed_passwords = update_hashed_passwords[0]
+                db.update_user(update_username, update_email, update_name, update_hashed_passwords, current_username, current_email, current_name, current_password)
+                st.success("Data pengguna berhasil diubah: {}".format(update_username))
+            st.rerun()
+        
+        st.subheader("Hapus Data Pengguna: {}".format(current_username))
+        if st.button("Hapus", type='primary'):
+            db.delete_user(current_username, current_email, current_name, current_password)
+            st.success("Data pengguna berhasil dihapus: '{}'".format(current_username))
+            st.rerun()
