@@ -142,6 +142,63 @@ class DbManagement():
         result = self.connection.commit()
         return result
 
+        # DATA CRITERIA
+
+    def read_criteria(self):
+        statement = '''
+        SELECT * from criteria
+        ''' 
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+    
+
+    def create_criteria(self, create_id, create_criteria, create_text, create_weight, create_impact, create_type, create_weighted):
+        statement = ''' 
+        INSERT INTO criteria(id,criteria,text,weight,impact,type,weighted)
+        VALUES (?,?,?,?,?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_id, create_criteria, create_text, create_weight, create_impact, create_type, create_weighted))
+        result = self.connection.commit()
+        return result
+    
+    def get_criteria(self, selected_criteria):
+        statement = '''
+        SELECT * FROM criteria where id = '{}'
+        '''.format(selected_criteria)
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+
+    def update_criteria(self, update_id, update_criteria, update_text, update_weight, update_impact, update_type, update_weighted,
+                              current_id, current_criteria, current_text, current_weight, current_impact, current_type, current_weighted):
+        statement = '''
+        update criteria set id=?, criteria=?, text=?, weight=?, impact=?, type=?, weighted=?
+                        where id=? and criteria=? and text=? and weight=? and impact=? and type=? and weighted=?
+        '''
+
+        result = self.cursor.execute(statement, (update_id, update_criteria, update_text, update_weight, update_impact, update_type, update_weight,
+                                                current_id, current_criteria, current_text, current_weight, current_impact, current_type, current_weighted))
+        result = self.connection.commit()
+        return result
+
+    def delete_criteria(self,  current_id, current_criteria, current_text, current_weight, current_impact, current_type, current_weighted):
+        statement = '''
+        delete from criteria where id=? and criteria=? and text=? and weight=? and impact=? and type=? and weighted=?
+        '''
+
+        result = self.cursor.execute(statement, (current_id, current_criteria, current_text, current_weight, current_impact, current_type, current_weighted))
+        result = self.connection.commit()
+        return result
+
+
+
+
+
+
     def __del__(self):
         self.connection.close()
 

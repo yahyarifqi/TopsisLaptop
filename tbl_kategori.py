@@ -29,7 +29,7 @@ for data in data_criteria:
     data_cr_type = data[5]
     data_cr_weighted = data[6]
 
-    ct_id.append(data_cr_id)
+    cr_id.append(data_cr_id)
     cr_criteria.append(data_cr_criteria)
     cr_text.append(data_cr_text)
     cr_weight.append(data_cr_weight)
@@ -67,7 +67,7 @@ criteria_result = db.get_criteria(selected_criteria)
 
 # Tampilkan data kategorisasi yang dipilih
 if criteria_result:
-    current_cr_id = criteria_result[0][0]
+    current_id = criteria_result[0][0]
     current_criteria = criteria_result [0][1]
     current_text = criteria_result[0][2]
     current_weight = criteria_result[0][3]
@@ -79,15 +79,15 @@ if criteria_result:
     st.subheader("Form Ubah Data Kategorisasi")
     col1, col2, col3 = st.columns(3)
     with col1:
-        update_cr_id = st.text_input("ID", value=current_id)
+        update_id = st.text_input("ID", value=current_id)
         update_criteria = st.text_input("Criteria", value=current_criteria)
-        update_text = st.text_input("Specification", value=current_text)
+        update_text = st.text_input("Text", value=current_text)
     with col2:
-        update_weight = st.text_input("Criteria", value=current_weight)
-        update_impact = st.text_input("Criteria", value=current_impact)
+        update_weight = st.text_input("Weight", value=current_weight)
+        update_impact = st.text_input("Impact", value=current_impact)
     with col3:
-        update_type = st.text_input("Criteria", value=current_type)
-        update_weighted = st.text_input("Class", value=current_weighted)
+        update_type = st.text_input("Type", value=current_type)
+        update_weighted = st.text_input("Weighted", value=current_weighted)
 
     if st.button("Ubah", type='primary'):
         # Lakukan validasi input atau operasi lain jika diperlukan

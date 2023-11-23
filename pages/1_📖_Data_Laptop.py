@@ -6,6 +6,7 @@ from topsis import Topsis
 import streamlit_authenticator as stauth
 from dbmanagement import DbManagement
 
+
 db = DbManagement('laptopsis.db')
 
 st.set_page_config(page_title="Data Laptop", page_icon="📖")
@@ -93,6 +94,7 @@ if st.button("Hapus", type='primary'):
     db.delete_categorization(current_id, current_specification, current_criteria, current_class)
     st.success("Data Kategorisasi berhasil dihapus: '{}'".format(current_id))
     st.rerun()
+
 
 
 # try:
