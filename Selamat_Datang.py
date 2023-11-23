@@ -1,7 +1,5 @@
 import streamlit as st
 
-st.session_state['user_authenticated'] = False
-
 st.set_page_config(
     page_title="Rekomendasi Laptop",
     page_icon="📈",
@@ -10,7 +8,10 @@ st.set_page_config(
 
 st.sidebar.success("Silahkan memilih laman yang ingin dituju.")
 
-if st.session_state["authentication_status"]:
-    st.write(f'# Selamat Datang *{st.session_state["name"]}* di Aplikasi Rekomendasi Laptop! 👋')
-else:
+try:
+    if st.session_state["authentication_status"]:
+        st.write(f'# Selamat Datang *{st.session_state["name"]}* di Aplikasi Rekomendasi Laptop! 👋')
+    else:
+        st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
+except:
     st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")

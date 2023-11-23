@@ -4,8 +4,6 @@ from dbmanagement import DbManagement
 
 db = DbManagement('laptopsis.db')
 
-st.session_state['user_authenticated'] = False
-
 st.set_page_config(page_title="Data Laptop", page_icon="📖")
 st.markdown("# Data Laptop")
 
@@ -17,5 +15,8 @@ st.write("""
 
 st.write(db.get_laptop_data())
 
-if st.session_state["authentication_status"]:
-    st.write('Masukkan CRUD di bawah ini')
+try:
+    if st.session_state["authentication_status"]:
+        st.write('Masukkan CRUD di bawah ini')
+except:
+    pass
