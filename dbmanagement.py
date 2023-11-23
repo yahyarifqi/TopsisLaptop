@@ -135,10 +135,10 @@ class DbManagement():
 
     def delete_categorization(self, current_id, current_specification, current_criteria, current_class):
         statement = '''
-        delete from categorization where id=? and specification=? and criteri=? and class=?
+        delete from categorization where id=? and specification=? and criteria=? and class=?
         '''
 
-        result = self.cursor.execute, (statement (current_id, current_specification, current_criteria, current_class))
+        result = self.cursor.execute(statement, (current_id, current_specification, current_criteria, current_class))
         result = self.connection.commit()
         return result
 
