@@ -45,6 +45,51 @@ class DbManagement():
 
         result = pd.read_sql_query(statement, self.connection)
         return result
+    
+    def read_user(self):
+        statement = '''
+        SELECT * from user
+        '''
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+    
+    def create_user(self, create_username, create_email, create_name, create_password):
+        statement = '''
+        INSERT INTO  user(username,email,name,password) VALUES (?,?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_username, create_email, create_name, create_password))
+        result = self.connection.commit()
+        return result
+    
+    def get_user(self, selected_user):
+        statement = '''
+        SELECT * from user where username = '{}'
+        '''.format(selected_user)
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+    
+    def update_user(self, update_username, update_email, update_name, update_hashed_password, current_username, current_email, current_name, current_password):
+        statement = '''
+        update user set username=?, email=?, name=?, password=? where username=? and email=? and name=? and password=?
+        '''
+
+        result = self.cursor.execute(statement, (update_username, update_email, update_name, update_hashed_password, current_username, current_email, current_name, current_password))
+        result = self.connection.commit()
+        return result
+    
+    def delete_user(self, current_username, current_email, current_name, current_password):
+        statement = '''
+        delete from user where username=? and email=? and name=? and password=?
+        '''
+
+        result = self.cursor.execute(statement, (current_username, current_email, current_name, current_password))
+        result = self.connection.commit()
+        return result
 
     def __del__(self):
         self.connection.close()
