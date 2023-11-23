@@ -174,7 +174,7 @@ class DbManagement():
         return result
 
     def update_criteria(self, update_id, update_criteria, update_text, update_weight, update_impact, update_type, update_weighted,
-                              current_id, current_criteria, current_text, current_weight, current_impact, current_type, current_weighted):
+                            current_id, current_criteria, current_text, current_weight, current_impact, current_type, current_weighted):
         statement = '''
         update criteria set id=?, criteria=?, text=?, weight=?, impact=?, type=?, weighted=?
                         where id=? and criteria=? and text=? and weight=? and impact=? and type=? and weighted=?
@@ -195,6 +195,57 @@ class DbManagement():
         return result
 
 
+    # DATA LAPTOP
+
+    def read_laptop(self):
+        statement = '''
+        SELECT * from laptop
+        ''' 
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+    
+
+    def create_laptop(self, create_id, create_detailLink, create_laptopName):
+        statement = ''' 
+        INSERT INTO laptop(id,detailLink,LaptopName)
+        VALUES (?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_id, create_detailLink, create_laptopName))
+        result = self.connection.commit()
+        return result
+    
+    def get_laptop(self, selected_laptop):
+        statement = '''
+        SELECT * FROM laptop where id= '{}'
+        '''.format(selected_laptop)
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+
+    def update_laptop(self, update_id, update_detailLink, update_laptopName,
+                        current_id, current_detailLink, current_laptopName):
+        statement = '''
+        update laptop set id=?, detailLink=?, laptopName=?
+                        where id=? and detailLink=? and laptopName=? 
+        '''
+
+        result = self.cursor.execute(statement, (update_id, update_detailLink, update_laptopName,
+                                                current_id, current_detailLink, current_laptopName))
+        result = self.connection.commit()
+        return result
+
+    def delete_laptop(self,  current_id, current_detailLink, current_laptopName):
+        statement = '''
+        delete from laptop where id=? and detailLink=? and laptopName=?
+        '''
+
+        result = self.cursor.execute(statement, (current_id, current_detailLink, current_laptopName))
+        result = self.connection.commit()
+        return result
 
 
 
