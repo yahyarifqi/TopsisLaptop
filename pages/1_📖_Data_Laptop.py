@@ -22,8 +22,7 @@ st.write(db.get_laptop_data())
 try:
     if st.session_state["authentication_status"]:
         st.write('Masukkan CRUD di bawah ini')
-except:
-    pass
+
     data_categorization = db.read_categorization()
 
     st.set_page_config(page_title='DATA CATEGORIZATION', page_icon= "📓")
@@ -47,3 +46,7 @@ except:
         st.subheader("BACA DATA CATEGORIZATION")
         read_data_categorization = pd.DataFrame(data_categorization,columns=["id","specification","criteria", "class"])
         st.write(read_data_categorization)
+
+except:
+    pass
+    
