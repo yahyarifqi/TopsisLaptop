@@ -8,8 +8,8 @@ from dbmanagement import DbManagement
 db = DbManagement('laptopsis.db')
 data_user = db.read_user()
 
-st.set_page_config(page_title="Admin", page_icon="🔐")
-st.markdown("# Admin")
+st.set_page_config(page_title="Administrator", page_icon="🔐")
+st.markdown("# Administrator")
 
 names = []
 usernames = []
@@ -36,11 +36,11 @@ if authentication_status == None:
 if authentication_status:
     authenticator.logout("Logout", "sidebar")
 
-    st.subheader("Baca Data Pengguna")
+    st.subheader("Baca Data Administrator")
     read_data_user = pd.DataFrame(data_user,columns=["Username","E-mail","Nama", "Password"])
     st.write(read_data_user)
 
-    st.subheader("Tambah Data Pengguna")
+    st.subheader("Tambah Data Administrator")
     col1, col2 = st.columns(2)
     with col1:
         create_username = st.text_input("Username")
@@ -54,12 +54,12 @@ if authentication_status:
         hashed_passwords = stauth.Hasher(create_password_list).generate()
         hashed_passwords = hashed_passwords[0]
         db.create_user(create_username,create_email, create_name, hashed_passwords)
-        st.success("Data pengguna baru berhasil ditambah: {}".format(create_name))
+        st.success("Data Administrator baru berhasil ditambah: {}".format(create_name))
         st.rerun()
 
-    st.subheader("Ubah Data Pengguna")
+    st.subheader("Ubah Data Administrator")
     list_of_users = [i[0] for i in data_user]
-    selected_user = st.selectbox("Data Pengguna", list_of_users)
+    selected_user = st.selectbox("Data Administrator", list_of_users)
     user_result = db.get_user(selected_user)
         
     if user_result:
@@ -81,16 +81,16 @@ if authentication_status:
         if st.button("Ubah"):
             if(update_password==current_password):
                 db.update_user(update_username, update_email, update_name, current_password, current_username, current_email, current_name, current_password)
-                st.success("Data pengguna berhasil diubah: {}".format(update_username))
+                st.success("Data Administrator berhasil diubah: {}".format(update_username))
             else:
                 update_hashed_passwords = stauth.Hasher(update_password_list).generate()
                 update_hashed_passwords = update_hashed_passwords[0]
                 db.update_user(update_username, update_email, update_name, update_hashed_passwords, current_username, current_email, current_name, current_password)
-                st.success("Data pengguna berhasil diubah: {}".format(update_username))
+                st.success("Data Administrator berhasil diubah: {}".format(update_username))
             st.rerun()
         
-        st.subheader("Hapus Data Pengguna: {}".format(current_username))
+        st.subheader("Hapus Data Administrator: {}".format(current_username))
         if st.button("Hapus", type='primary'):
             db.delete_user(current_username, current_email, current_name, current_password)
-            st.success("Data pengguna berhasil dihapus: '{}'".format(current_username))
+            st.success("Data Administrator berhasil dihapus: '{}'".format(current_username))
             st.rerun()
