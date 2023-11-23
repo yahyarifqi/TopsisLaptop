@@ -8,6 +8,8 @@ from dbmanagement import DbManagement
 db = DbManagement('laptopsis.db')
 data_user = db.read_user()
 
+st.session_state['user_authenticated'] = False
+
 st.set_page_config(page_title="Administrator", page_icon="🔐")
 st.markdown("# Administrator")
 

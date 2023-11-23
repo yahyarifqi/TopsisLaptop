@@ -4,6 +4,8 @@ from dbmanagement import DbManagement
 
 db = DbManagement('laptopsis.db')
 
+st.session_state['user_authenticated'] = False
+
 st.set_page_config(page_title="Data Laptop", page_icon="📖")
 st.markdown("# Data Laptop")
 

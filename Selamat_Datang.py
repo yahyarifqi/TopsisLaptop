@@ -1,5 +1,7 @@
 import streamlit as st
 
+st.session_state['user_authenticated'] = False
+
 st.set_page_config(
     page_title="Rekomendasi Laptop",
     page_icon="📈",
