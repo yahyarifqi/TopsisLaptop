@@ -91,6 +91,57 @@ class DbManagement():
         result = self.connection.commit()
         return result
 
+
+    # DATA CAtegorization
+
+    
+    def read_categorization(self):
+        statement = '''
+        SELECT * from categorization
+        ''' 
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fethcall()
+        return result
+    
+
+    def create_categorization(self, create_id, create_specification, create_criteria, creat_class):
+        statement = ''' 
+        INSERT INTO categorization(id,specification,criteria,class)
+        VALUES (?,?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_id, create_specification, create_criteria, creat_class))
+        result = self.connection.commit()
+        return result
+    
+    def get_categorization(self, selected_categorization):
+        statement = '''
+        SELECT * FROM categorization where id = '{}'
+        '''.format(selected_categorization)
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+
+    def update_categorization(self, update_id, update_specification, update_criteria, update_class, current_id, current_specification, current_criteria, current_class):
+        statement = '''
+        update categorization set id=?, specification=?, criteria=?, class=? where id=? and specification=? and criteria=? and class=?
+        '''
+
+        result = self.cursor.execute(statement, (update_id, update_specification, update_criteria, update_class, current_id, current_specification,current_criteria, current_class))
+        result = self.connection.commit()
+        return result
+
+    def delete_categorization(self, current_id, current_specification, current_criteria, current_class):
+        statement = '''
+        delete from categorization where id=? and specification=? and criteri=? and class=?
+        '''
+
+        result = self.cursor.execute, (statement (current_id, current_specification, current_criteria, current_class))
+        result = self.connection.commit()
+        return result
+
     def __del__(self):
         self.connection.close()
 
