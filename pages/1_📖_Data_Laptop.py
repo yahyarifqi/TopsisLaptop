@@ -1,5 +1,9 @@
+import pickle
+from pathlib import Path
+import pandas as pd
 import streamlit as st
 from topsis import Topsis
+import streamlit_authenticator as stauth
 from dbmanagement import DbManagement
 
 db = DbManagement('laptopsis.db')
@@ -25,20 +29,20 @@ except:
     st.set_page_config(page_title='DATA CATEGORIZATION', page_icon= "📓")
     st.markdown("# DATA CATEGORIZATION")
 
-    id = []
-    specification= []
-    criteria = []
-    class = []
+    ct_id = []
+    ct_specification= []
+    ct_criteria = []
+    ct_class = []
     for data in data_categorization:
-        data_id = data[2]
-        data_specification = data[0]
-        data_criteria = data[3]
-        data_class = data[3]
+        data_ct_id = data[0]
+        data_ct_specification = data[2]
+        data_ct_criteria = data[3]
+        data_ct_class = data[4]
 
-        names.append(data_names)
-        usernames.append(data_usernames)
-        passwords.append(data_passwords)
-        class.append(data_class)
+        ct_id.append(data_ct_id)
+        ct_specification.append(data_ct_specification)
+        ct_criteria.append(data_ct_criteria)
+        ct_class.append(data_ct_class)
         
         st.subheader("BACA DATA CATEGORIZATION")
         read_data_categorization = pd.DataFrame(data_categorization,columns=["id","specification","criteria", "class"])
