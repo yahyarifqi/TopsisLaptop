@@ -101,17 +101,17 @@ class DbManagement():
         ''' 
 
         result = self.cursor.execute(statement)
-        result = self.cursor.fethcall()
+        result = self.cursor.fetchall()
         return result
     
 
-    def create_categorization(self, create_id, create_specification, create_criteria, creat_class):
+    def create_categorization(self, create_id, create_specification, create_criteria, create_class):
         statement = ''' 
         INSERT INTO categorization(id,specification,criteria,class)
         VALUES (?,?,?,?)
         '''
 
-        result = self.cursor.execute(statement, (create_id, create_specification, create_criteria, creat_class))
+        result = self.cursor.execute(statement, (create_id, create_specification, create_criteria, create_class))
         result = self.connection.commit()
         return result
     
