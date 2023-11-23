@@ -8,4 +8,7 @@ st.set_page_config(
 
 st.sidebar.success("Silahkan memilih laman yang ingin dituju.")
 
-st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
+if st.session_state["authentication_status"]:
+    st.write(f'# Selamat Datang *{st.session_state["name"]}* di Aplikasi Rekomendasi Laptop! 👋')
+else:
+    st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
