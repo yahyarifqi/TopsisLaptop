@@ -62,8 +62,8 @@ if st.button("Tambah", type='primary'):
 
 st.subheader("Ubah Data Kriteria")
 list_of_criteria = [i[0] for i in data_criteria]
-selected_criteria = st.selectbox("Data Criteria", list_of_criteria)
-criteria_result = db.get_criteria(selected_criteria)
+selected_Criteria = st.selectbox("Data Criteria", list_of_criteria)
+criteria_result = db.get_Criteria(selected_Criteria)
 
 # Tampilkan data kategorisasi yang dipilih
 if criteria_result:

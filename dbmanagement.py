@@ -164,10 +164,10 @@ class DbManagement():
         result = self.connection.commit()
         return result
     
-    def get_criteria(self, selected_criteria):
+    def get_Criteria(self, selected_Criteria):
         statement = '''
         SELECT * FROM criteria where id = '{}'
-        '''.format(selected_criteria)
+        '''.format(selected_Criteria)
 
         result = self.cursor.execute(statement)
         result = self.cursor.fetchall()
