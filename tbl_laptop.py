@@ -5,6 +5,7 @@ import streamlit as st
 from topsis import Topsis
 import streamlit_authenticator as stauth
 from dbmanagement import DbManagement
+import numpy as np
 
 db = DbManagement('laptopsis.db')
 # LAPTOP
