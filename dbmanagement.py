@@ -194,6 +194,58 @@ class DbManagement():
         result = self.connection.commit()
         return result
 
+    # DATA DISCRITE CRITERIA
+
+    def read_discrete_criteria(self):
+        statement = '''
+        SELECT * from discrete_criteria
+        ''' 
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+    
+
+    def create_discrete_criteria(self, create_laptop, create_criteria, create_category):
+        statement = ''' 
+        INSERT INTO discrete_criteria(laptop,criteria,category)
+        VALUES (?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_laptop, create_criteria, create_category))
+        result = self.connection.commit()
+        return result
+    
+    def get_discrete_criteria(self, selected_discrete_criteria):
+        statement = '''
+        SELECT * FROM discrete_criteria where laptop = '{}'
+        '''.format(selected_discrete_criteria)
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+
+    def update_discrete_criteria(self, update_laptop, update_criteria, update_category,
+                            current_laptop, current_criteria, current_category):
+        statement = '''
+        update discrete_criteria set laptop=?, criteria=?, category=?
+                        where laptop=? and criteria=? and category=?
+        '''
+
+        result = self.cursor.execute(statement, (update_laptop, update_criteria, update_category,
+                                                current_laptop, current_criteria, current_category))
+        result = self.connection.commit()
+        return result
+
+    def delete_discrete_criteria(self,  current_laptop, current_criteria, current_category):
+        statement = '''
+        delete from discrete_criteria where laptop=? and criteria=? and category=?
+        '''
+
+        result = self.cursor.execute(statement, (current_laptop, current_criteria, current_category))
+        result = self.connection.commit()
+        return result
+
 
     # DATA LAPTOP
 
@@ -247,6 +299,164 @@ class DbManagement():
         result = self.connection.commit()
         return result
 
+
+    # DATA NUMERIC CRITERIA
+
+    def read_numeric_criteria(self):
+        statement = '''
+        SELECT * from numeric_criteria
+        ''' 
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+    
+
+    def create_numeric_criteria(self, create_laptop, create_criteria, create_value):
+        statement = ''' 
+        INSERT INTO numeric_criteria(laptop,criteria,value)
+        VALUES (?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_laptop, create_criteria, create_value))
+        result = self.connection.commit()
+        return result
+    
+    def get_numeric_criteria(self, selected_numeric_criteria):
+        statement = '''
+        SELECT * FROM numeric_criteria where laptop = '{}'
+        '''.format(selected_numeric_criteria)
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+
+    def update_numeric_criteria(self, update_laptop, update_criteria, update_value,
+                            current_laptop, current_criteria, current_value):
+        statement = '''
+        update numeric_criteria set laptop=?, criteria=?, value=?
+                        where laptop=? and criteria=? and value=?
+        '''
+
+        result = self.cursor.execute(statement, (update_laptop, update_criteria, update_value,
+                                                current_laptop, current_criteria, current_value))
+        result = self.connection.commit()
+        return result
+
+    def delete_numeric_criteria(self,  current_laptop, current_criteria, current_value):
+        statement = '''
+        delete from numeric_criteria where laptop=? and criteria=? and value=?
+        '''
+
+        result = self.cursor.execute(statement, (current_laptop, current_criteria, current_value))
+        result = self.connection.commit()
+        return result
+
+    
+
+    # DATA SUB CRITERIA
+
+    def read_sub_criteria(self):
+        statement = '''
+        SELECT * from sub_criteria
+        ''' 
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+    
+
+    def create_sub_criteria(self, create_id, create_kelas, create_weight):
+        statement = ''' 
+        INSERT INTO sub_criteria(id,kelas,weight)
+        VALUES (?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_id, create_kelas, create_weight))
+        result = self.connection.commit()
+        return result
+    
+    def get_sub_criteria(self, selected_sub_criteria):
+        statement = '''
+        SELECT * FROM sub_criteria where id= '{}'
+        '''.format(selected_sub_criteria)
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+
+    def update_sub_criteria(self, update_id, update_kelas, update_weight,
+                        current_id, current_kelas, current_weight):
+        statement = '''
+        update sub_criteria set id=?, kelas=?, weight=?
+                        where id=? and kelas=? and weight=? 
+        '''
+
+        result = self.cursor.execute(statement, (update_id, update_kelas, update_weight,
+                                                current_id, current_kelas, current_weight))
+        result = self.connection.commit()
+        return result
+
+    def delete_sub_criteria(self, current_id, current_kelas, current_weight):
+        statement = '''
+        delete from sub_criteria where id=? and kelas=? and weight=?
+        '''
+
+        result = self.cursor.execute(statement, (current_id, current_kelas, current_weight))
+        result = self.connection.commit()
+        return result
+
+
+    
+    # DATA WEIGHT
+
+    
+    def read_weight(self):
+        statement = '''
+        SELECT * from weight
+        ''' 
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+    
+
+    def create_weight(self, create_id, create_criteria, create_value, create_weight):
+        statement = ''' 
+        INSERT INTO weight(id,criteria,value,weight)
+        VALUES (?,?,?,?)
+        '''
+
+        result = self.cursor.execute(statement, (create_id, create_criteria, create_value, create_weight))
+        result = self.connection.commit()
+        return result
+    
+    def get_weight(self, selected_weight):
+        statement = '''
+        SELECT * FROM weight where id = '{}'
+        '''.format(selected_weight)
+
+        result = self.cursor.execute(statement)
+        result = self.cursor.fetchall()
+        return result
+
+    def update_weight(self, update_id, update_criteria, update_value, update_weight, current_id, current_criteria, current_value, current_weight):
+        statement = '''
+        update weight set id=?, criteria=?, value=?, weight=? where id=? and criteria=? and value=? and weight=?
+        '''
+
+        result = self.cursor.execute(statement, (update_id, update_criteria, update_value, update_weight, current_id, current_criteria,current_value, current_weight))
+        result = self.connection.commit()
+        return result
+
+    def delete_weight(self, current_id, current_criteria, current_value, current_weight):
+        statement = '''
+        delete from weight where id=? and criteria=? and value=? and weight=?
+        '''
+
+        result = self.cursor.execute(statement, (current_id, current_criteria, current_value, current_weight))
+        result = self.connection.commit()
+        return result
 
 
 
