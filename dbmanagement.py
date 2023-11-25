@@ -91,7 +91,7 @@ class DbManagement():
         result = self.connection.commit()
         return result
 
-
+#region unused_code
     # DATA CAtegorization
 
     
@@ -356,6 +356,9 @@ class DbManagement():
 
     # DATA SUB CRITERIA
 
+
+
+
     def read_sub_criteria(self):
         statement = '''
         SELECT * from sub_criteria
@@ -376,14 +379,14 @@ class DbManagement():
         result = self.connection.commit()
         return result
     
-    def get_sub_criteria(self, selected_sub_criteria):
-        statement = '''
-        SELECT * FROM sub_criteria where id= '{}'
-        '''.format(selected_sub_criteria)
+    # def get_sub_criteria(self, selected_sub_criteria):
+    #     statement = '''
+    #     SELECT * FROM sub_criteria where id= '{}'
+    #     '''.format(selected_sub_criteria)
 
-        result = self.cursor.execute(statement)
-        result = self.cursor.fetchall()
-        return result
+    #     result = self.cursor.execute(statement)
+    #     result = self.cursor.fetchall()
+    #     return result
 
     def update_sub_criteria(self, update_id, update_kelas, update_weight,
                         current_id, current_kelas, current_weight):
@@ -458,10 +461,46 @@ class DbManagement():
         result = self.connection.commit()
         return result
 
+#endregion
 
+    def read_categorization_from_criteria(self, criteria):
+        statement ='''
+        SELECT ID, specification FROM categorization
+        WHERE criteria=?
+        '''
+
+        result = self.cursor.execute(statement, str(criteria))
+        result = self.cursor.fetchall()
+        return result
+    
+    def create_laptop(self, detailLink, laptopName, discreteCriteria=[], numericCriteria=[]):
+        statement = '''
+        INSERT INTO laptop(detailLink, laptopName)
+        VALUES (?,?)
+        '''
+        result = self.cursor.execute(statement, (detailLink, laptopName))
+        result = self.connection.commit()
+        newRowID = self.cursor.lastrowid
+
+        for row in discreteCriteria:
+            statement2 = '''
+            INSERT INTO discrete_criteria(laptop, criteria, category)
+            VALUES (?,?,?)
+            '''
+            result = self.cursor.execute(statement2, (str(newRowID), str(row[0]), str(row[1])))
+            result = self.connection.commit()
+
+        for row in numericCriteria:
+            statement3 = '''
+            INSERT INTO numeric_criteria(laptop, criteria, value)
+            VALUES (?,?,?)
+            '''
+
+            result = self.cursor.execute(statement3, (str(newRowID), str(row[0]), str(row[1])))
+            result = self.connection.commit()
+        
+        return 0
 
     def __del__(self):
         self.connection.close()
-
-
 
