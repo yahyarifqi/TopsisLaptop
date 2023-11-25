@@ -5,6 +5,7 @@ import streamlit as st
 from topsis import Topsis
 import streamlit_authenticator as stauth
 from dbmanagement import DbManagement
+from streamlit.components.v1 import html
 
 
 db = DbManagement('laptopsis.db')
@@ -20,80 +21,58 @@ st.write("""
 
 st.write(db.get_laptop_data())
 
-st.subheader("Form Ubah Data Discrete Kriteria")
-col1, col2, col3 = st.columns(3)
-with col1:
-    title = st.text_input('Silahkan isi nama laptop?', '')
-    st.write('Nama Laptop :', title)
+tab1, tab2= st.tabs(["CREAT", "UPDATE"])
 
-    option = st.selectbox(
-        'Silahkan pilih brand laptop?',
-        ('HP', 'Dell', 'asus', 'lenovo', 'acer'))
-    st.write('You selected:', option)
+with tab1:
 
-    option = st.selectbox(
-        'Silahkan pilih brand laptop?',
-        ('SSD', 'HDD', 'eMMc'))
-    st.write('You selected:', option)
+    def tambah_data(nama_laptop, brand_laptop, tipe_penyimpanan, jumlah_penyimpanan,
+                    kartu_grafis, prosesor, ukuran_layar, besar_ram, ketahanan_baterai,
+                    harga_terbaru, harga_lama, link_laptop):
+        # Di sini, Anda dapat menambahkan logika untuk menyimpan data ke database atau melakukan operasi lainnya
+        st.success(f"Data berhasil ditambahkan:\n"
+                f"Nama Laptop: {nama_laptop}\n"
+                f"Brand Laptop: {brand_laptop}\n"
+                f"Tipe Penyimpanan: {tipe_penyimpanan}\n"
+                f"Jumlah Penyimpanan: {jumlah_penyimpanan}\n"
+                f"Kartu Grafis: {kartu_grafis}\n"
+                f"Prosesor: {prosesor}\n"
+                f"Ukuran Layar: {ukuran_layar}\n"
+                f"Besar RAM: {besar_ram}\n"
+                f"Ketahanan Baterai: {ketahanan_baterai}\n"
+                f"Harga Terbaru: {harga_terbaru}\n"
+                f"Harga Lama: {harga_lama}\n"
+                f"Link Laptop: {link_laptop}")
 
-    title = st.text_input('Silahkan isi Durability', '')
-    if title.isdigit():
-        st.write('Nama Laptop:', title)
-    else:
-        st.warning('Input harus berupa angka.')
+    # Input dari pengguna
+    nama_laptop = st.text_input('Silahkan isi nama laptop?', '')
+    brand_laptop = st.selectbox('Silahkan pilih brand laptop', ('HP', 'Dell', 'asus', 'lenovo', 'acer'))
+    tipe_penyimpanan = st.selectbox('Silahkan pilih Tipe Penyimpanan', ('SSD', 'HDD', 'eMMc'))
+    jumlah_penyimpanan = st.number_input('Silahkan pilih Jumlah Penyimpanan')
+    kartu_grafis = st.selectbox('Silahkan pilih Kartu Grafis', ('AMD Radeon', 'Intel UHD', 'NVDIA', 'Apple M2'))
+    prosesor = st.selectbox('Silahkan pilih Prosesor', ('1920x1080', '1366x768'))
+    ukuran_layar = st.selectbox('Silahkan pilih Ukuran Layar', ('12.5', '14.0', '15.6', '11.6'))
+    besar_ram = st.number_input('Silahkan isi Besar RAM')
+    ketahanan_baterai = st.number_input('Silahkan isi Ketahanan Baterai')
+    harga_terbaru = st.number_input('Masukan Harga terbaru')
+    harga_lama = st.number_input('Silahkan Masukan Harga Lama')
+    link_laptop = st.text_input('Silahkan isi Link Laptop', '')
 
-    option = st.selectbox(
-        'Silahkan pilih Graphic Card',
-        ('AMD Radeon', 'Intel UHD', 'NVDIA', 'Apple M2'))
-    st.write('You selected:', option)
+    konfirmasi = st.checkbox('Saya yakin data ingin disimpan')
 
-with col2:
-    title = st.text_input('Masukan Harga terbaru', '')
-    if title.isdigit():
-        st.write('Harga Terbaru:', title)
-    else:
-        st.warning('Input harus berupa angka.')
+    # Tombol "Tambah Data"
+    if st.button("Tambah Data", type='primary') and konfirmasi:
+        tambah_data(nama_laptop, brand_laptop, tipe_penyimpanan, jumlah_penyimpanan,
+                    kartu_grafis, prosesor, ukuran_layar, besar_ram, ketahanan_baterai,
+                    harga_terbaru, harga_lama, link_laptop)
+        st.session_state.tambah_data = False  # Setel kembali ke False setelah pemrosesan
+        st.info("Data berhasil disimpan.")
 
-    option = st.selectbox(
-        'Silahkan pilih Processors',
-        ('HP', 'Dell', 'asus', 'lenovo', 'acer'))
-    st.write('You selected:', option)
 
-    title = st.text_input('Silahkan isi Besar RAM', '')
-    if title.isdigit():
-        st.write('Besar RAM:', title)
-    else:
-        st.warning('Input harus berupa angka.')
+with tab2:
+   st.header("A dog")
+   st.image("https://static.streamlit.io/examples/dog.jpg", width=200)
 
-    option = st.selectbox(
-        'Silahkan pilih Processors',
-        ('1920x1080', '1366x768'))
-    st.write('You selected:', option)
 
-    option = st.selectbox(
-        'Silahkan pilih Size Screen',
-        ('12.5', '14.0', '15.6', '11.6'))
-    st.write('You selected:', option)
-with col3:
-    title = st.text_input('Masukan Harga Lama', '')
-    if title.isdigit():
-        st.write('Harga Lama:', title)
-    else:
-        st.warning('Input harus berupa angka.')
-
-    option = st.selectbox(
-        'Silahkan pilih Size Screen',
-        ('512', '1.000', '500', '32'))
-    st.write('You selected:', option)
-    
-    title = st.text_input('Masukan Berat Laptop', '')
-    if title.isdigit():
-        st.write('Berat Laptop:', title)
-    else:
-        st.warning('Input harus berupa angka.')
-
-    title = st.text_input('Silahkan isi Link Laptop', '')
-    st.write('Link Laptop :', title)
 
 
 # try:
