@@ -34,6 +34,7 @@ if authentication_status == None:
     st.warning("Masukkan username dan password!")
 
 if authentication_status:
+    st.session_state['user_authenticated'] = True
     authenticator.logout("Logout", "sidebar")
 
     st.subheader("Baca Data Administrator")

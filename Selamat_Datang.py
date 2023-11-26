@@ -63,3 +63,11 @@ with col2:
     st.image(image)
     if sistem_rek:
         switch_page("rekomendasi laptop")
+
+try:
+    if st.session_state["authentication_status"]:
+        st.write(f'# Selamat Datang *{st.session_state["name"]}* di Aplikasi Rekomendasi Laptop! 👋')
+    else:
+        st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
+except:
+    st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
