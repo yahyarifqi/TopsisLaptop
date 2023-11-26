@@ -9,7 +9,7 @@ class DbManagement():
     
     def get_laptop_data(self, for_topsis = False):
         statement1 = ''.join(['''
-        SELECT laptop.laptopName, criteria.criteria, ''',
+        SELECT laptop.ID, laptop.laptopName, criteria.criteria, ''',
         'sub_criteria.weight as specification' if for_topsis else 'categorization.specification','''
         FROM discrete_criteria LEFT OUTER JOIN laptop ON discrete_criteria.laptop = laptop.ID
         LEFT OUTER JOIN criteria ON discrete_criteria.criteria = criteria.ID
@@ -17,7 +17,7 @@ class DbManagement():
         ''','LEFT OUTER JOIN sub_criteria ON categorization.class = sub_criteria.ID' if for_topsis else ''])
 
         statement2 = '''
-        SELECT laptop.laptopName, criteria.criteria, numeric_criteria.value as specification
+        SELECT laptop.ID, laptop.laptopName, criteria.criteria, numeric_criteria.value as specification
         FROM numeric_criteria LEFT OUTER JOIN laptop ON numeric_criteria.laptop = laptop.ID
         LEFT OUTER JOIN criteria ON numeric_criteria.criteria = criteria.ID
         '''
@@ -26,8 +26,9 @@ class DbManagement():
 
         result = pd.concat([result1,result2], ignore_index=True)
 
-        result = result.drop_duplicates(subset=['laptopName','criteria'])
-        result = result.pivot(index='laptopName', columns='criteria', values='specification').reset_index()
+        result = result.drop_duplicates(subset=['ID','laptopName','criteria'])
+        result = result.pivot(index=['ID','laptopName'], columns='criteria', values='specification').reset_index().set_index('ID')
+
         return result
 
     def get_criteria(self):
@@ -473,7 +474,7 @@ class DbManagement():
         result = self.cursor.fetchall()
         return result
     
-    def create_laptop(self, detailLink, laptopName, discreteCriteria=[], numericCriteria=[]):
+    def create_laptop(self, laptopName, detailLink, discreteCriteria=[], numericCriteria=[]):
         statement = '''
         INSERT INTO laptop(detailLink, laptopName)
         VALUES (?,?)
@@ -498,8 +499,54 @@ class DbManagement():
 
             result = self.cursor.execute(statement3, (str(newRowID), str(row[0]), str(row[1])))
             result = self.connection.commit()
-        
-        return 0
+    
+    def update_laptop(self, id_laptop, detailLink, laptopName, discreteCriteria=[], numericCriteria=[]):
+        statement = '''
+        UPDATE laptop SET 
+        detailLink = ?, laptopName = ?
+        WHERE ID = ?
+        '''
+        result = self.cursor.execute(statement, (detailLink, laptopName, str(id_laptop)))
+        result = self.connection.commit()
+
+        for row in discreteCriteria:
+            statement2 = '''
+            UPDATE discrete_criteria SET
+            category = ?
+            WHERE laptop = ? AND criteria = ?
+            '''
+
+            result = self.cursor.execute(statement2, (str(row[1]), str(id_laptop), str(row[0])))
+            result = self.connection.commit()
+
+        for row in numericCriteria:
+            statement3 = '''
+            UPDATE numeric_criteria SET
+            value = ?
+            WHERE laptop = ? AND criteria = ?
+            '''
+
+            result = self.cursor.execute(statement3, (str(row[1]), str(id_laptop), str(row[0])))
+            result = self.connection.commit()
+    
+    def delete_laptop(self, id_laptop):
+        statement = '''
+        DELETE FROM discrete_criteria WHERE laptop = ?
+        '''
+        result = self.cursor.execute(statement, (str(id_laptop),))
+        self.connection.commit()
+
+        statement2 = '''
+        DELETE FROM numeric_criteria WHERE laptop = ?
+        '''
+        result = self.cursor.execute(statement2, (str(id_laptop),))
+        self.connection.commit()
+
+        statement3 = '''
+        DELETE FROM laptop WHERE ID = ?
+        '''
+        result = self.cursor.execute(statement3, (str(id_laptop),))
+        self.connection.commit()
 
     def __del__(self):
         self.connection.close()
