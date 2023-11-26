@@ -1,24 +1,13 @@
-import pickle
-from pathlib import Path
 import pandas as pd
 import streamlit as st
-from topsis import Topsis
-import streamlit_authenticator as stauth
 from dbmanagement import DbManagement
 from streamlit.components.v1 import html
-import time
 
 
 db = DbManagement('laptopsis.db')
 
 st.set_page_config(page_title="Data Laptop", page_icon="📖")
 st.markdown("# Data Laptop")
-
-st.write("""
-    ## Rekomendasi laptop berdasarkan input user menggunakan TOPSIS
-
-    Di bawah adalah daftar laptop yang tersedia      
-    """)
 
 dataLaptop = db.get_laptop_data()
 criteria = db.get_criteria().set_index('ID')
