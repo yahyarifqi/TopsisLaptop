@@ -9,7 +9,7 @@ class DbManagement():
     
     def get_laptop_data(self, for_topsis = False):
         statement1 = ''.join(['''
-        SELECT laptop.ID, laptop.laptopName, criteria.criteria, ''',
+        SELECT laptop.ID, laptop.laptopName, laptop.detailLink, criteria.criteria, ''',
         'sub_criteria.weight as specification' if for_topsis else 'categorization.specification','''
         FROM discrete_criteria LEFT OUTER JOIN laptop ON discrete_criteria.laptop = laptop.ID
         LEFT OUTER JOIN criteria ON discrete_criteria.criteria = criteria.ID
@@ -17,7 +17,7 @@ class DbManagement():
         ''','LEFT OUTER JOIN sub_criteria ON categorization.class = sub_criteria.ID' if for_topsis else ''])
 
         statement2 = '''
-        SELECT laptop.ID, laptop.laptopName, criteria.criteria, numeric_criteria.value as specification
+        SELECT laptop.ID, laptop.laptopName, laptop.detailLink, criteria.criteria, numeric_criteria.value as specification
         FROM numeric_criteria LEFT OUTER JOIN laptop ON numeric_criteria.laptop = laptop.ID
         LEFT OUTER JOIN criteria ON numeric_criteria.criteria = criteria.ID
         '''
@@ -27,7 +27,7 @@ class DbManagement():
         result = pd.concat([result1,result2], ignore_index=True)
 
         result = result.drop_duplicates(subset=['ID','laptopName','criteria'])
-        result = result.pivot(index=['ID','laptopName'], columns='criteria', values='specification').reset_index().set_index('ID')
+        result = result.pivot(index=['ID','laptopName', 'detailLink'], columns='criteria', values='specification').reset_index().set_index('ID')
 
         return result
 
