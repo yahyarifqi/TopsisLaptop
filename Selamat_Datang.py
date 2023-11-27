@@ -10,7 +10,14 @@ st.set_page_config(
 
 st.sidebar.success("Silahkan memilih laman yang ingin dituju.")
 
-st.title("Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
+try:
+    if st.session_state["authentication_status"]:
+        st.write(f'# Selamat Datang *{st.session_state["name"]}* di Aplikasi Rekomendasi Laptop! 👋')
+    else:
+        st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
+except:
+    st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
+    
 st.subheader('Apakah Anda sedang mencari laptop sempurna yang memadukan \
          kinerja, gaya, dan inovasi sesuai keinginan Anda?', divider='rainbow')
 st.write("**Tidak perlu bingung!** Kami hadir untuk menyederhanakan pencarian \
@@ -64,10 +71,3 @@ with col2:
     if sistem_rek:
         switch_page("rekomendasi laptop")
 
-try:
-    if st.session_state["authentication_status"]:
-        st.write(f'# Selamat Datang *{st.session_state["name"]}* di Aplikasi Rekomendasi Laptop! 👋')
-    else:
-        st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")
-except:
-    st.write("# Selamat Datang di Aplikasi Rekomendasi Laptop! 👋")

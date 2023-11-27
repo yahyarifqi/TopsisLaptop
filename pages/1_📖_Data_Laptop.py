@@ -2,6 +2,8 @@ import pandas as pd
 import streamlit as st
 from dbmanagement import DbManagement
 from streamlit.components.v1 import html
+from streamlit_js_eval import streamlit_js_eval
+from streamlit_extras.switch_page_button import switch_page 
 
 
 db = DbManagement('laptopsis.db')
@@ -70,6 +72,7 @@ try:
                             harga_terbaru, harga_lama, link_laptop)
                 st.session_state.tambah_data = False  # Setel kembali ke False setelah pemrosesan
                 st.info("Data berhasil disimpan.")
+                streamlit_js_eval(js_expressions="parent.window.location.reload()")
 
 
         with tab2:
@@ -146,6 +149,7 @@ try:
                             harga_terbaru, harga_lama, link_laptop)
                     st.success(f"Data untuk ID {selected_id} berhasil diubah.")
                     st.session_state['update'] = False
+                    streamlit_js_eval(js_expressions="parent.window.location.reload()")
                     
         # HAPUS
             # Tampilkan konfirmasi penghapusan jika ID dipilih
@@ -166,6 +170,6 @@ try:
                 if st.session_state['delete']:
                     db.delete_laptop(selected_id)
                     st.session_state['delete'] = False
-                    st.rerun()
+                    streamlit_js_eval(js_expressions="parent.window.location.reload()")
 except:
     pass
