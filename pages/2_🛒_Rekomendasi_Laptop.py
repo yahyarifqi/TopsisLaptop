@@ -79,7 +79,6 @@ def pre_process(data, criteria, subcrit, pricePref):
 
 st.set_page_config(page_title="Rekomendasi Laptop", page_icon="🛒")
 st.markdown("# Rekomendasi Laptop")
-st.sidebar.header("Rekomendasi Laptop")
 st.write("Silahkan masukkan bobot preferensi laptop Anda")
 col1, col2 = st.columns(2)
 
