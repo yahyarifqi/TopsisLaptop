@@ -4,12 +4,30 @@ from dbmanagement import DbManagement
 from streamlit.components.v1 import html
 from streamlit_js_eval import streamlit_js_eval
 from streamlit_extras.switch_page_button import switch_page 
-
+import jwt
+import extra_streamlit_components as stx
+from datetime import datetime
 
 db = DbManagement('laptopsis.db')
 
 st.set_page_config(page_title="Data Laptop", page_icon="📖")
 st.markdown("# Data Laptop")
+
+#Auto login dengan cookies
+st.session_state['authentication_status'] = False
+st.session_state['logout'] = False
+cookie_manager = stx.CookieManager()
+if not st.session_state['authentication_status']:
+            token = cookie_manager.get("spk")
+            if token is not None:
+                token = jwt.decode(token, "abcdef", algorithms=['HS256'])
+                if token is not False:
+                    if not st.session_state['logout']:
+                        if token['exp_date'] > datetime.utcnow().timestamp():
+                            if 'name' and 'username' in token:
+                                st.session_state['name'] = token['name']
+                                st.session_state['username'] = token['username']
+                                st.session_state['authentication_status'] = True
 
 dataLaptop = db.get_laptop_data()
 criteria = db.get_criteria().set_index('ID')
